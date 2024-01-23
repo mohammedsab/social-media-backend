@@ -1,6 +1,5 @@
-const router = require("express").Router();
-const Post = require("../models/Post");
-const User = require("../models/User");
+import { Post } from "../models/post.model.js";
+import { User } from "../models/user.model.js";
 
 //create a post
 export const createPost = async (req, res) => {
@@ -72,15 +71,28 @@ export const getPost = async (req, res) => {
 //get timeline posts
 export const timelinePost = async (req, res) => {
   try {
-    const currentUser = await User.findById(req.body.userId);
+    const currentUser = await User.findById(req.params.userId);
     const userPosts = await Post.find({ userId: currentUser._id });
+    console.log(userPosts);
     const friendPosts = await Promise.all(
-      currentUser.followings.map((friendId) => {
+      currentUser.followering.map((friendId) => {
         return Post.find({ userId: friendId });
       })
     );
-    res.json(userPosts.concat(...friendPosts));
+    res.status(200).json(userPosts.concat(...friendPosts));
   } catch (err) {
     res.status(500).json(err);
+  }
+};
+
+//get user's posts
+export const userPost = async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    console.log(user);
+    const posts = await Post.find({ userId: user._id });
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json(err.message);
   }
 };

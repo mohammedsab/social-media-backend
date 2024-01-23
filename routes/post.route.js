@@ -5,7 +5,8 @@ import {
   likePost,
   timelinePost,
   updatePost,
-} from "../controllers/post.contrpller.js";
+  userPost,
+} from "../controllers/post.controller.js";
 
 export default (router) => {
   router.post("/post", createPost);
@@ -13,5 +14,6 @@ export default (router) => {
   router.delete("/post/:id", deletePost);
   router.put("/post/:id/like", likePost);
   router.get("/post/:id", getPost);
-  router.get("/post/timeline/all", timelinePost);
+  router.get("/post/timeline/:userId", timelinePost);
+  router.get("/post/profile/:username", userPost);
 };
