@@ -26,14 +26,19 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await getUserByEmail(email);
-    !user && res.status(404).json("user not found");
+    console.log(user);
+    if (!user) {
+      return res.status(404).json("User not found");
+    }
 
     const validPassword = await bcrypt.compare(password, user.password);
-    !validPassword && res.status(200).json("Wrong password");
+    if (!validPassword) {
+      return res.status(400).json("Wrong password");
+    }
 
     return res.status(200).json(user);
   } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
+    console.error(error);
+    return res.status(500).json(error);
   }
 };

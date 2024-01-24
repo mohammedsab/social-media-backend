@@ -1,4 +1,4 @@
-import { getUserById, deleteUserById } from "../models/user.model.js";
+import { getUserById, deleteUserById, User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
 export const updateUserData = async (req, res) => {
@@ -54,10 +54,11 @@ export const deleteUser = async (req, res) => {
 };
 
 export const getUserData = async (req, res) => {
-  const { id } = req.params;
+  const id = req.query.userId;
+  const username = req.query.username;
 
   try {
-    const user = await getUserById(id);
+    const user = id ? await getUserById(id) : await User.findOne({ username });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
