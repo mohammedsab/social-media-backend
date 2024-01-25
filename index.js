@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import "dotenv/config";
 import routes from "./routes/index.js";
+import multer from "multer";
 
 const app = express();
 
@@ -11,6 +12,24 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  try {
+    return res.status(200).json("File uploaded seccess");
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 mongoose.connect(process.env.MONGO_URL);
 
