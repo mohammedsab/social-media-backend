@@ -5,8 +5,12 @@ import morgan from "morgan";
 import "dotenv/config";
 import routes from "./routes/index.js";
 import multer from "multer";
+import path from "path";
 
 const app = express();
+
+const __dirname = path.resolve();
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // Middleware
 app.use(express.json());
@@ -18,19 +22,18 @@ const storage = multer.diskStorage({
     cb(null, "public/images");
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, req.body.name);
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (req, res) => {
   try {
-    return res.status(200).json("File uploaded seccess");
+    return res.status(200).json("File uploded successfully");
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 });
-
 mongoose.connect(process.env.MONGO_URL);
 
 // routes
