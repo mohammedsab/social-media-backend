@@ -6,6 +6,7 @@ import "dotenv/config";
 import routes from "./routes/index.js";
 import multer from "multer";
 import path from "path";
+import cors from "cors";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
+app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
